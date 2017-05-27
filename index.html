@@ -16,11 +16,14 @@
   <script src='bays.geojson'></script>
   <script src="bower_components/leaflet.locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script>
 
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+<script src="https://use.fontawesome.com/a0c3d59b5b.js"></script>
+
   <link rel="stylesheet" href="bower_components/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
   <link href='bower_components/mapbox.js/mapbox.css' rel='stylesheet' />
    <style>
-   #mapid { height: 800px; }
+   html,body {height: 100% ;}
+   #mapid { height: 100%; }
    </style>
 </head>
 <body>
@@ -29,7 +32,7 @@
 L.mapbox.accessToken = 'pk.eyJ1Ijoic2ltb25jb3plbnMiLCJhIjoiY2ozNXFvMm1yMDFkcjMycGx4aDB0ODR5aCJ9.QcSlKzB7-abD8smOOacV_A';
 // Create a map in the div #map
 map = L.mapbox.map('mapid', 'mapbox.streets')
-map.setView([-41.44,147.15], 13);
+map.setView([-41.44,147.15], 17);
 var hideClass = {
    "Accessible": 1,
   "Bus Stop": 1,
@@ -74,7 +77,14 @@ L.geoJSON(bays, {
         return {color: "#000000"};
     }
   }).addTo(map);
-L.control.locate().addTo(map);
+L.control.locate({
+  cacheLocation: true,
+  keepCurrentZoomLevel: true,
+  flyTo: true,
+  locateOptions: {
+               maxZoom: 17,
+              enableHighAccuracy: true
+}}).addTo(map);
 </script>
 </body>
 </html>
