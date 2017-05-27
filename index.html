@@ -62,7 +62,7 @@ function onEachFeature(feature, layer) {
   if (p.baynumber) { content = content + "<b>Bay Number</b>: "+p.baynumber+"<br/>" }
   layer.bindPopup(content)
 }
-L.control.locate({
+var lc = L.control.locate({
   cacheLocation: true,
   keepCurrentZoomLevel: true,
   flyTo: true,
@@ -70,6 +70,7 @@ L.control.locate({
                maxZoom: 17,
               enableHighAccuracy: true
 }}).addTo(map);
+lc.start();
 
 L.geoJSON(bays, {
     onEachFeature: onEachFeature,
