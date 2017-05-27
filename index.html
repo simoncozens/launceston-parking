@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Launceston Parking Map</title>
+
+<link rel="apple-touch-icon" sizes="180x180" href="https://simoncozens.github.io/launceston-parking/icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://simoncozens.github.io/launceston-parking/icons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="https://simoncozens.github.io/launceston-parking/icons/favicon-16x16.png">
+<link rel="manifest" href="https://simoncozens.github.io/launceston-parking/icons/manifest.json">
+<link rel="mask-icon" href="https://simoncozens.github.io/launceston-parking/icons/safari-pinned-tab.svg" color="#5bbad5">
+<link rel="shortcut icon" href="https://simoncozens.github.io/launceston-parking/icons/favicon.ico">
+<meta name="msapplication-config" content="https://simoncozens.github.io/launceston-parking/icons/browserconfig.xml">
+<meta name="theme-color" content="#ffffff">
+
+  <script src='bower_components/mapbox.js/mapbox.js'></script>
+  <script src='bays.geojson'></script>
+  <script src="bower_components/leaflet.locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script>
+
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="bower_components/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
+  <link href='bower_components/mapbox.js/mapbox.css' rel='stylesheet' />
+   <style>
+   #mapid { height: 800px; }
+   </style>
+</head>
+<body>
+ <div id="mapid"></div>
+<script>
+L.mapbox.accessToken = 'pk.eyJ1Ijoic2ltb25jb3plbnMiLCJhIjoiY2ozNXFvMm1yMDFkcjMycGx4aDB0ODR5aCJ9.QcSlKzB7-abD8smOOacV_A';
+// Create a map in the div #map
+map = L.mapbox.map('mapid', 'mapbox.streets')
+map.setView([-41.44,147.15], 13);
+var hideClass = {
+   "Accessible": 1,
+  "Bus Stop": 1,
+   "Clearway": 1,
+   "Loading Zone": 1,
+   "Motorbike": 1,
+   "No Parking": 1,
+   "No Standing": 1,
+   "Permit": 1,
+   "Reserved": 1,
+   "Taxi Zone": 1
+}
+function onEachFeature(feature, layer) {
+  var p = feature.properties
+  if (!p) return;
+  content = "";
+  if (p.signinfo) { content = content + "<b>"+p.signinfo+"</b><br/>" }
+  if (p.parktime_mins) { content = content + "<b>"+p.parktime_mins+" mins</b><br/>" }
+  if (p.class && p.class != "Signed") { content = content + "<b>Type</b>: "+p.class+"<br/>" }
+  if (p.baynumber) { content = content + "<b>Bay Number</b>: "+p.baynumber+"<br/>" }
+  layer.bindPopup(content)
+}
+L.geoJSON(bays, {
+    onEachFeature: onEachFeature,
+    style: function(feature) {
+      parkingClass = feature.properties.class;
+      if (parkingClass in hideClass) {
+        return { color: "#ffffff", opacity: 0.3 }
+      }
+      if (feature.properties.meternumber) {
+        return { color: "#000000" }
+      }
+        if (feature.properties.parktime_mins >= 180) {
+            return {color: "#00ff00"};
+        }
+        if (feature.properties.parktime_mins >= 120) {
+            return {color: "#00ffff"};
+        }
+        if (feature.properties.parktime_mins > 0 && feature.properties.parktime_mins < 15) {
+            return {color: "#ff0000"};
+        }
+        return {color: "#000000"};
+    }
+  }).addTo(map);
+L.control.locate().addTo(map);
+</script>
+</body>
+</html>
