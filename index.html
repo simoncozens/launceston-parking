@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html>
-<head>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
   <title>Launceston Parking Map</title>
 
 <link rel="apple-touch-icon" sizes="180x180" href="https://simoncozens.github.io/launceston-parking/icons/apple-touch-icon.png">
@@ -22,78 +22,48 @@
 
   <link rel="stylesheet" href="bower_components/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
   <link href='bower_components/mapbox.js/mapbox.css' rel='stylesheet' />
-   <style>
-body {
-    padding: 0;
-    margin: 0;
+  <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+     <style>
+html,body,#mapid {
+  height: 100%;
 }
-html, body, #mapid {
-    height: 100vh;
-    width: 100vw;
+body { padding-top: 50px; }
+.btn-primary {
+  color: #000;
+background-color: #faffff;
+border-color: #2e6da4;
+}
+.btn-primary.focus {
+  background-color: #faffff;
+  color: #000;
 }
    </style>
 </head>
 <body>
- <div id="mapid"></div>
-<script>
-L.mapbox.accessToken = 'pk.eyJ1Ijoic2ltb25jb3plbnMiLCJhIjoiY2ozNXFvMm1yMDFkcjMycGx4aDB0ODR5aCJ9.QcSlKzB7-abD8smOOacV_A';
-// Create a map in the div #map
-map = L.mapbox.map('mapid', 'mapbox.streets')
-map.setView([-41.44,147.15], 17);
-var hideClass = {
-   "Accessible": 1,
-  "Bus Stop": 1,
-   "Clearway": 1,
-   "Loading Zone": 1,
-   "Motorbike": 1,
-   "No Parking": 1,
-   "No Standing": 1,
-   "Permit": 1,
-   "Reserved": 1,
-   "Taxi Zone": 1
-}
-function onEachFeature(feature, layer) {
-  var p = feature.properties
-  if (!p) return;
-  content = "";
-  if (p.signinfo) { content = content + "<b>"+p.signinfo+"</b><br/>" }
-  if (p.parktime_mins) { content = content + "<b>"+p.parktime_mins+" mins</b><br/>" }
-  if (p.class && p.class != "Signed") { content = content + "<b>Type</b>: "+p.class+"<br/>" }
-  if (p.baynumber) { content = content + "<b>Bay Number</b>: "+p.baynumber+"<br/>" }
-  layer.bindPopup(content)
-}
-var lc = L.control.locate({
-  cacheLocation: true,
-  keepCurrentZoomLevel: true,
-  flyTo: true,
-  locateOptions: {
-               maxZoom: 17,
-              enableHighAccuracy: true
-}}).addTo(map);
-lc.start();
 
-L.geoJSON(bays, {
-    onEachFeature: onEachFeature,
-    style: function(feature) {
-      parkingClass = feature.properties.class;
-      if (parkingClass in hideClass) {
-        return { color: "#ffffff", opacity: 0.3 }
-      }
-      if (feature.properties.meternumber) {
-        return { color: "#000000" }
-      }
-        if (feature.properties.parktime_mins >= 180) {
-            return {color: "#00ff00"};
-        }
-        if (feature.properties.parktime_mins >= 120) {
-            return {color: "#00ffff"};
-        }
-        if (feature.properties.parktime_mins > 0 && feature.properties.parktime_mins < 15) {
-            return {color: "#ff0000"};
-        }
-        return {color: "#000000"};
-    }
-  }).addTo(map);
-</script>
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container">
+     <div id="myButtons" class="btn-group" data-toggle="buttons">
+      <label class="navbar-btn btn btn-primary">
+        <input type="checkbox" name="hide-metered" id="hide-metered">
+  Hide metered?</label>
+        <p class="navbar-text">Parking time:</p>
+       <label class="navbar-btn btn btn-primary">
+         <input type="radio" name="how-long" id="howlong-15" value="15" checked="checked"/>¼+</label>
+       <label class="navbar-btn btn btn-primary active">
+        <input type="radio" name="how-long" id="howlong-60" value="60" checked="checked"/>1+</label>
+       <label class="navbar-btn btn btn-primary">
+      <input type="radio" name="how-long" id="howlong-120" value="120"/>2+</label>
+       <label class="navbar-btn btn btn-primary">
+      <input type="radio" name="how-long" id="howlong-180" value="180"/>3+</label>
+       </div>
+  </div>
+</nav>
+
+<div id="mapid"></div>
+
+<script src="launceston.js"></script>
 </body>
 </html>
