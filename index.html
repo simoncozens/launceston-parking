@@ -62,6 +62,15 @@ function onEachFeature(feature, layer) {
   if (p.baynumber) { content = content + "<b>Bay Number</b>: "+p.baynumber+"<br/>" }
   layer.bindPopup(content)
 }
+L.control.locate({
+  cacheLocation: true,
+  keepCurrentZoomLevel: true,
+  flyTo: true,
+  locateOptions: {
+               maxZoom: 17,
+              enableHighAccuracy: true
+}}).addTo(map);
+
 L.geoJSON(bays, {
     onEachFeature: onEachFeature,
     style: function(feature) {
@@ -84,14 +93,6 @@ L.geoJSON(bays, {
         return {color: "#000000"};
     }
   }).addTo(map);
-L.control.locate({
-  cacheLocation: true,
-  keepCurrentZoomLevel: true,
-  flyTo: true,
-  locateOptions: {
-               maxZoom: 17,
-              enableHighAccuracy: true
-}}).addTo(map);
 </script>
 </body>
 </html>
