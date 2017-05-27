@@ -87,7 +87,7 @@ var createPopup = function (feature, layer) {
       style: styleBay
     }).addTo(map);
 
-  $("#myButtons :input").change(function() {
+  $("#myButtons :input, #myButtons2 :input").change(function() {
     console.log("Click!")
     gj.setStyle(styleBay);
   })
