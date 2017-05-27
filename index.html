@@ -11,6 +11,7 @@
 <link rel="shortcut icon" href="https://simoncozens.github.io/launceston-parking/icons/favicon.ico">
 <meta name="msapplication-config" content="https://simoncozens.github.io/launceston-parking/icons/browserconfig.xml">
 <meta name="theme-color" content="#ffffff">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
   <script src='bower_components/mapbox.js/mapbox.js'></script>
   <script src='bays.geojson'></script>
@@ -22,8 +23,14 @@
   <link rel="stylesheet" href="bower_components/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
   <link href='bower_components/mapbox.js/mapbox.css' rel='stylesheet' />
    <style>
-   html,body {height: 100% ;}
-   #mapid { height: 100%; }
+body {
+    padding: 0;
+    margin: 0;
+}
+html, body, #mapid {
+    height: 100vh;
+    width: 100vw;
+}
    </style>
 </head>
 <body>
