@@ -67,9 +67,15 @@ var createPopup = function (feature, layer) {
 }
 
 /* Let's go */
-  map = L.mapbox.map('mapid', 'mapbox.streets')
-  map.setView([-41.44,147.15], 17);
-
+  map = L.mapbox.map('mapid', 'mapbox.streets',{
+    center: [-41.44,147.15],
+    zoom: 17,
+    minZoom: 13,
+    maxBounds: [
+      [-41.392779, 147.239112],
+      [-41.498549, 147.060928]
+    ]
+  })
   /* Controls to locate the user */
   var lc = L.control.locate({
     cacheLocation: true,
