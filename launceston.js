@@ -48,6 +48,12 @@ var styleBay = function(feature) {
 }
 
 var createPopup = function (feature, layer) {
+  var where = feature.geometry.coordinates[0]
+  var gourl
+  if (where && 0 in where) {
+    where = where[0]
+    gourl = "https://www.google.com/maps/dir/?api=1&destination="+where[1]+","+where[0]+"&dir_action=navigate"
+  }
   var p = feature.properties
   if (!p) return;
   content = "";
@@ -62,6 +68,9 @@ var createPopup = function (feature, layer) {
   }
   if (p.baynumber) {
     content = content + "<b>Bay Number</b>: "+p.baynumber+"<br/>"
+  }
+  if (gourl) {
+    content = content + "<a href=\""+gourl+"\">Go!</a>"
   }
   layer.bindPopup(content)
 }
