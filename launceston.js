@@ -14,15 +14,45 @@ var hideClass = {
    "Taxi Zone": 1
 }
 
+var restrictionApplies = function(restriction) {
+  var dateObj = new Date()
+  var dow = dateObj.getDay(); if (dow==0) { dow=7 };
+  var hour = dateObj.getHours() + dateObj.getMinutes()/60;
+  if ("day_s" in restriction) {
+    if (! (dow >= restriction.day_s && dow <= restriction.day_e)) {
+     return false;
+    }
+  }
+  return (hour >= restriction.hour_s && hour <= restriction.hour_e)
+}
+
+var restrictionsApply = function(feature) {
+  var applies = false;
+  var restrictions = feature.properties.restrictions;
+  if (!restrictions) { return true}
+  // If we don't have times for the restrictions, they always apply.
+  restrictions.forEach(function(r) {
+    if (restrictionApplies(r)) { applies = true }
+  })
+  return applies;
+}
+
 var hidden = function(feature) {
+  if (feature.properties.objectid == 3134) {
+    console.log("Testing for hiddenness")
+  }
   parkingClass = feature.properties.class;
-  if (parkingClass in hideClass) { return true }
-  var minTime = $("input[name=how-long]:checked").val();
-  var hideMetered = $("#hide-metered").is(":checked")
-  if (feature.properties.parktime_mins > 0 && feature.properties.parktime_mins < minTime) {
+  var restricted = restrictionsApply(feature)
+  if (restricted && parkingClass in hideClass) { return true }
+  var minTime =  parseInt($("input[name=how-long]:checked").val(),10);
+  var hideMetered =$("#hide-metered").is(":checked")
+  if (restricted && parseInt(feature.properties.parktime_mins,10) > 0 && parseInt(feature.properties.parktime_mins,10) < minTime) {
+    if (feature.properties.objectid == 3134) {
+      console.log("Hiding")
+    }
     return true
   }
-  if (hideMetered) {
+  if (hideMetered && restricted) {
     if (feature.properties.meternumber) { return true }
     if (parkingClass == "Multibay Metered" || parkingClass == "Metered") { return true }
   }
@@ -30,7 +60,7 @@ var hidden = function(feature) {
 }
 var styleBay = function(feature) {
   if (hidden(feature)) {
-    return { color: "#ffffff", opacity: 0.1 }
+    return { color: "#ffffff", opacity: 0.1, display: "none" }
   }
   if (feature.properties.meternumber) {
     return { color: "#000000", opacity: 1 }
@@ -60,6 +90,14 @@ var createPopup = function (feature, layer) {
   if (p.signinfo) {
     content = content + "<b>"+p.signinfo+"</b><br/>"
   }
+  if ("restrictions" in feature.properties) {
+    if (restrictionsApply(feature)) {
+      content = content + "<b>Restrictions apply now</b><br/>"
+    } else {
+      content = content + "<b>Restrictions not currently applicable</b><br/>"
+    }
+  }
+
   if (p.parktime_mins) {
     content = content + "<b>"+p.parktime_mins+" mins</b><br/>"
   }
